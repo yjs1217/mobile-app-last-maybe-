@@ -1,21 +1,29 @@
 //app.js
-require('dotenv/config');
-const createError = require('http-errors');
-const express = require('express');
-const path = require('path');
-const cookieParser = require('cookie-parser');
-const logger = require('morgan');
-const passport = require('passport');
+import 'dotenv/config';
+import createError from 'http-errors';
+import express from 'express';
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
+import cookieParser from 'cookie-parser';
+import logger from 'morgan';
+import passport from 'passport';
 
-require('./app_api/models/db.js');
-require('./app_api/config/passport.js');
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
-const apiRouter = require('./app_api/routes/index');
-const usersRouter = require('./app_server/routes/users');
+//require('./app_server/models/db');
+import './app_api/models/db.js';
+import './app_api/config/passport.js';
+
+//var indexRouter = require('./routes/index');
+//var usersRouter = require('./routes/users');
+//const indexRouter = require('./app_server/routes/index');
+import apiRouter from './app_api/routes/index.js';
+import usersRouter from './app_server/routes/users.js';
 
 const app = express();
 
-const cors = require('cors');
+import cors from 'cors';
 const corsOptions = {
   origin: '*',
   optionSuccessStatus: 200
@@ -30,6 +38,7 @@ app.use('/api', (req, res, next) => {
 });
 
 // view engine setup
+//app.set('views', path.join(__dirname, 'views'));
 app.set('views', path.join(__dirname, 'app_server' , 'views'));
 app.set('view engine', 'pug');
 app.use(logger('dev'));
@@ -40,6 +49,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.static(path.join(__dirname, 'app_public', 'build')));
 app.use(passport.initialize());
 
+//app.use('/', indexRouter);
 app.use('/api', apiRouter);
 app.use('/users', usersRouter);
 
@@ -71,6 +81,4 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
-
-
+export default app;
